@@ -1,7 +1,9 @@
-create database Test_DWH_Ilnur;
+if DB_ID('Test_DWH_Ilnur') is NULL
+	create database Test_DWH_Ilnur;
 GO
 
 use Test_DWH_Ilnur;
+GO
 
 create table klienti (
 	customer_id varchar(10),
@@ -21,8 +23,8 @@ create table tovari (
 );
 create table zakazi (
 	order_id varchar(10),
-	customer_id int,
-	product_id int,
+	customer_id varchar(10),
+	product_id varchar(10),
 	quantity int,
 	order_dt date,
 	amount decimal(10, 2),

@@ -1,7 +1,9 @@
-create database Test_DWH_Ilnur;
+if DB_ID('Test_DWH_Ilnur') is NULL
+	create database Test_DWH_Ilnur;
 GO
 
 use Test_DWH_Ilnur;
+GO
 
 create table customer (
 	dwh_customer_id int primary key identity,
@@ -24,14 +26,14 @@ create table products (
 create table orders (
 	Dwh_order_id int primary key identity,
 	order_id varchar(10),
-	dwh_customer_id int references customer(dwh_customer_id),
-	dwh_product_id int references products(dwh_product_id),
+	dwh_customer_id int,
+	dwh_product_id int,
 	quantity int,
 	order_dt date,
 	amount decimal(10, 2),
-	status nvarchar(5),
+	status nvarchar(10),
 	created_at datetime,
-	update_at datetime,
+	updated_at datetime,
 
 	foreign key (dwh_customer_id) references customer(dwh_customer_id) 
 		on delete cascade 
