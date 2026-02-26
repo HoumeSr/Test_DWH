@@ -119,7 +119,7 @@ END;
 GO
 -- Для улучшения запроса можно создать индексы для dwh_product_id и dwh_customer_id
 -- Можно добавить UNIQUE для customer_id, product_id в таблицах customer и products соответсвенно.
--- Как и для таблицы orders сделать UNIQUE для столбца order_id
+-- Как и для таблицы orders сделать UNIQUE для столбца order_id, dwh_customer_id и dwh_product_id
 
 --Во всех случаях я решил делать инкрементное обновление данных
 --В таблицах products и customer находятся первичные ключи, от которых зависят foreign key в order
