@@ -16,9 +16,9 @@ create table klienti (
 create table tovari (
 	product_id varchar(10),
 	name nvarchar(20),
-	Description nvarchar(50),
+	Description nvarchar(100),
 	price int,
-	weight decimal(10, 2),
+	weight nvarchar(20),
 	created_at datetime
 );
 create table zakazi (

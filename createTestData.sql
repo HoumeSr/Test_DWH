@@ -1,3 +1,6 @@
+use Test_DWH_Ilnur;
+GO
+
 insert into klienti (customer_id, subname, name, phone_number, city, Registrated_date) values
 ('CUS665', 'Михайлов', 'Мария', '+72164310637', 'Новгород', '2025-12-25'),
 ('CUS193', 'Михайлов', 'Александр', '+75776716737', 'Волгоград', '2023-01-15'),
@@ -51,9 +54,9 @@ insert into klienti (customer_id, subname, name, phone_number, city, Registrated
 ('CUS650', 'Соколов', 'Анна', '+76580342384', 'Новгород', '2023-09-08');
 
 insert into tovari (product_id, name, Description, price, weight, created_at) values
-('PRC970', 'Картофель', NULL, 666, NULL, CONVERT(datetime, '2024-09-12 12:30:00', 120)),
-('PRC850', 'Молоко', NULL, 346, NULL, CONVERT(datetime, '2023-10-15 15:00:00', 120)),
-('PRC730', 'Сок', NULL, 101, NULL, CONVERT(datetime, '2023-02-10 09:30:00', 120)),
+('PRC970', 'Картофель', 'Белорусский картофель 1 кг', 666, NULL, CONVERT(datetime, '2024-09-12 12:30:00', 120)),
+('PRC850', 'Молоко', 'Сельское молоко 460 мл', 346, NULL, CONVERT(datetime, '2023-10-15 15:00:00', 120)),
+('PRC730', 'Сок', 'Добрый 1 л', 101, NULL, CONVERT(datetime, '2023-02-10 09:30:00', 120)),
 ('PRC982', 'Мороженое', NULL, 578, NULL, CONVERT(datetime, '2024-04-18 08:00:00', 120)),
 ('PRC200', 'Виноград', NULL, 828, NULL, CONVERT(datetime, '2023-10-15 15:00:00', 120)),
 ('PRC450', 'Мороженое', NULL, 741, NULL, CONVERT(datetime, '2025-06-05 21:10:00', 120)),

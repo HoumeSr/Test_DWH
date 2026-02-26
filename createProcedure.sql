@@ -7,11 +7,11 @@ GO
 CREATE OR ALTER PROCEDURE updateCustomer AS
 BEGIN
 	UPDATE c
-	SET subname = c.subname,
-		name = c.name,
-		phone_number = c.phone_number,
-		city = c.city,
-		Registrated_date = c.Registrated_date
+	SET subname = k.subname,
+		name = k.name,
+		phone_number = k.phone_number,
+		city = k.city,
+		Registrated_date = k.Registrated_date
 	FROM customer AS c
 	JOIN klienti AS k ON k.customer_id = c.customer_id
 	WHERE k.subname <> c.subname OR
@@ -30,16 +30,17 @@ BEGIN
 	FROM klienti as k
 	WHERE NOT EXISTS (SELECT 1 FROM customer AS c WHERE c.customer_id = k.customer_id)
 END;
+GO
 
 --products
 CREATE OR ALTER PROCEDURE updateProducts AS
 BEGIN
 	UPDATE p
-	SET name = p.name,
-		Description = p.Description,
-		price = p.price,
-		weight = p.weight,
-		created_at = p.created_at
+	SET name = t.name,
+		Description = t.Description,
+		price = t.price,
+		weight = t.weight,
+		created_at = t.created_at
 	FROM products AS p
 	JOIN tovari AS t ON t.product_id = p.product_id
 	WHERE t.name <> p.name OR
@@ -58,7 +59,7 @@ BEGIN
 	FROM tovari as t
 	WHERE NOT EXISTS (SELECT 1 FROM products AS p WHERE t.product_id = p.product_id)
 END;
-
+GO
 -- orders
 CREATE OR ALTER PROCEDURE updateOrders AS
 BEGIN
@@ -95,6 +96,7 @@ BEGIN
 	JOIN customer as c ON c.customer_id = z.customer_id
 	WHERE NOT EXISTS (SELECT 1 FROM orders AS o WHERE o.order_id = z.order_id)
 END;
+GO
 
 --Task 2.
 CREATE OR ALTER PROCEDURE getPopularProducts AS
@@ -114,17 +116,23 @@ BEGIN
 	SELECT city, name, sumQuantity, sumAmount FROM topProduct WHERE rnk <= 5
 	ORDER BY city, rnk
 END;
-
+GO
 -- Для улучшения запроса можно создать индексы для dwh_product_id и dwh_customer_id
 -- Можно добавить UNIQUE для customer_id, product_id в таблицах customer и products соответсвенно.
 -- Как и для таблицы orders сделать UNIQUE для столбца order_id
 
+--Во всех случаях я решил делать инкрементное обновление данных
+--В таблицах products и customer находятся первичные ключи, от которых зависят foreign key в order
+--Мы не можем очистить эти таблицы, поэтому полное обновление невозможно без очистки orders
+
+--В таблице orders нет такой проблемы, но как правило эта таблица самая объемная
+--Следовательно полное обновление данных будет слишком ресурсоёмко
 
 --Task 3
 
 CREATE OR ALTER PROCEDURE getWeigth AS
 BEGIN
-	DECLARE @pattern  varchar (30);
+	DECLARE @pattern nvarchar (30);
 	SET @pattern = '([\d]+(\.\d+)? (кг|г|л|мл))';
 	UPDATE p
 	SET weight = REGEXP_SUBSTR(p.Description, @pattern)
