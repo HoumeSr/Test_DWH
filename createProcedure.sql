@@ -14,11 +14,11 @@ BEGIN
 		Registrated_date = k.Registrated_date
 	FROM customer AS c
 	JOIN klienti AS k ON k.customer_id = c.customer_id
-	WHERE k.subname <> c.subname OR
-		k.name <> c.name OR
-		k.phone_number <> c.phone_number OR
-		k.city <> c.city OR
-		k.Registrated_date <> c.Registrated_date
+	WHERE ISNULL(k.subname, '') <> ISNULL(c.subname, '')
+	   OR ISNULL(k.name, '') <> ISNULL(c.name, '')
+	   OR ISNULL(k.phone_number, '') <> ISNULL(c.phone_number, '')
+	   OR ISNULL(k.city, '') <> ISNULL(c.city, '')
+	   OR ISNULL(k.Registrated_date, '99991231') <> ISNULL(c.Registrated_date, '99991231')
 
 	INSERT INTO customer (customer_id, subname, name, phone_number, city, Registrated_date)
 	SELECT k.customer_id,
@@ -43,11 +43,11 @@ BEGIN
 		created_at = t.created_at
 	FROM products AS p
 	JOIN tovari AS t ON t.product_id = p.product_id
-	WHERE t.name <> p.name OR
-		t.Description <> p.Description OR
-		t.price <> p.price OR
-		t.weight <> p.weight OR
-		t.created_at <> p.created_at;
+	WHERE ISNULL(t.name, '') <> ISNULL(p.name, '') OR
+		ISNULL(t.Description, '') <> ISNULL(p.Description, '') OR
+		ISNULL(t.price, -1) <> ISNULL(p.price, -1) OR
+		ISNULL(t.weight, -1) <> ISNULL(p.weight, -1) OR
+		ISNULL(t.created_at, '99991231') <> ISNULL(p.created_at, '99991231');
 
 	INSERT INTO products (product_id, name, Description, price, weight, created_at)
 	SELECT t.product_id,
@@ -117,9 +117,9 @@ BEGIN
 	ORDER BY city, rnk
 END;
 GO
--- Для улучшения запроса можно создать индексы для dwh_product_id и dwh_customer_id
+-- Для улучшения запроса можно создать индексы для dwh_product_id и dwh_customer_id в таблице orders
 -- Можно добавить UNIQUE для customer_id, product_id в таблицах customer и products соответсвенно.
--- Как и для таблицы orders сделать UNIQUE для столбца order_id, dwh_customer_id и dwh_product_id
+-- Как и для таблицы orders сделать UNIQUE для столбца order_id
 
 --Во всех случаях я решил делать инкрементное обновление данных
 --В таблицах products и customer находятся первичные ключи, от которых зависят foreign key в order
@@ -132,9 +132,10 @@ GO
 
 CREATE OR ALTER PROCEDURE getWeigth AS
 BEGIN
-	DECLARE @pattern nvarchar (30);
-	SET @pattern = '([\d]+(\.\d+)? (кг|г|л|мл))';
 	UPDATE p
-	SET weight = REGEXP_SUBSTR(p.Description, @pattern)
+	SET weight = (CASE WHEN	REGEXP_LIKE(p.Description, '([\d]+(.[\d]+)?)\s?кг') THEN CONVERT(decimal(10, 2), REGEXP_SUBSTR(p.Description, '([\d]+(.[\d]+)?)\s?кг', 1, 1, 'i', 1)) * 1000
+					   WHEN	REGEXP_LIKE(p.Description, '([\d]+(.[\d]+)?)\s?г') THEN CONVERT(decimal(10, 2), REGEXP_SUBSTR(p.Description, '([\d]+(.[\d]+)?)\s?г', 1, 1, 'i', 1))
+					   ELSE NULL END)
 	FROM products as p
+	WHERE p.Description IS NOT NULL OR p.weight IS NOT NULL
 END;

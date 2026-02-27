@@ -20,7 +20,7 @@ create table products (
 	name nvarchar(20),
 	Description nvarchar(50),
 	price int,
-	weight nvarchar(20),
+	weight decimal(10, 2),
 	created_at datetime
 );
 create table orders (
